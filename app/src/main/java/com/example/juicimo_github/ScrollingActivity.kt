@@ -7,10 +7,18 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.juicimo_github.adapters.OnRepositoryItemClickListener
+import com.example.juicimo_github.adapters.ReposRecyclerAdapter
+import com.example.juicimo_github.classes.Repository
+import kotlinx.android.synthetic.main.content_scrolling.*
 
-class ScrollingActivity : AppCompatActivity() {
+class ScrollingActivity : AppCompatActivity(), OnRepositoryItemClickListener {
+
+    private lateinit var repository: ReposRecyclerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scrolling)
         setSupportActionBar(findViewById(R.id.toolbar))
@@ -19,6 +27,11 @@ class ScrollingActivity : AppCompatActivity() {
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }
+
+        initRecyclerView()
+
+        val repositoriesList = createRepositoriesDataSet()
+        repository.submitList(repositoriesList)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -37,4 +50,38 @@ class ScrollingActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    /**
+     * Init list of repositories
+     */
+    private fun initRecyclerView() {
+        recycler_view.apply {
+            layoutManager = LinearLayoutManager(context)
+            repository =
+                ReposRecyclerAdapter(this@ScrollingActivity)
+            recycler_view.adapter = repository
+        }
+    }
+
+    override fun onItemClick(item: Repository, position: Int) {
+        TODO("Not yet implemented")
+    }
+
+    private fun createRepositoriesDataSet(): ArrayList<Repository> {
+        val repositories = ArrayList<Repository>()
+        val namesList = arrayOf(
+            "Hradec Králové", "Chrudim", "Vysoké Mýto", "Polička", "Jaroměř",
+            "Dvůr Králové", "Trutnov", "Nový Bydžov", "Mělník"
+        )
+
+        for (repo in namesList) {
+            repositories.add(
+                Repository(
+                    repo
+                )
+            )
+        }
+        return repositories
+    }
+
 }
