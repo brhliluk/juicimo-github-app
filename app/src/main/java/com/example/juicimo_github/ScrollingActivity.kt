@@ -7,11 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.juicimo_github.adapters.OnRepositoryItemClickListener
 import com.example.juicimo_github.adapters.ReposRecyclerAdapter
-import com.example.juicimo_github.classes.Repository
+import com.example.juicimo_github.models.Repository
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.koushikdutta.ion.Ion
+import com.orm.SugarRecord
+import com.orm.SugarRecord.listAll
 import kotlinx.android.synthetic.main.content_scrolling.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -20,7 +22,7 @@ import org.json.JSONObject
 class ScrollingActivity : AppCompatActivity(), OnRepositoryItemClickListener {
 
     private lateinit var repository: ReposRecyclerAdapter
-    lateinit var strArray: Array<String>
+    //private val repositoriesDataSet: MutableList<Repository> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -33,12 +35,11 @@ class ScrollingActivity : AppCompatActivity(), OnRepositoryItemClickListener {
                 .setAction("Action", null).show()
         }
 
+        loadRepos()
+
         initRecyclerView()
 
-        val repositoriesList = createRepositoriesDataSet()
-        repository.submitList(repositoriesList)
-
-        loadRepos()
+        repository.submitList(SugarRecord.listAll(Repository::class.java))
 
     }
 
@@ -75,36 +76,18 @@ class ScrollingActivity : AppCompatActivity(), OnRepositoryItemClickListener {
         TODO("Not yet implemented")
     }
 
-    private fun createRepositoriesDataSet(): ArrayList<Repository> {
-        val repositories = ArrayList<Repository>()
-        val namesList = arrayOf(
-            "Hradec Králové", "Chrudim", "Vysoké Mýto", "Polička", "Jaroměř",
-            "Dvůr Králové", "Trutnov", "Nový Bydžov", "Mělník"
-        )
-
-        for (repo in namesList) {
-            repositories.add(
-                Repository(
-                    repo
-                )
-            )
-        }
-        return repositories
-    }
-
-    private fun loadRepos(){
+    private fun loadRepos() {
         Ion.with(applicationContext)
             .load("https://api.github.com/users/Inza/repos")
             .asString()
             .setCallback { e, result ->
-                val root: JSONArray = JSONArray(result)
-                strArray = Array<String>(root.length()) { "LOADING" }
+                val root = JSONArray(result)
                 for (i in 0 until root.length()) {
                     val tmp = root.get(i) as JSONObject
-                    strArray[i] = tmp.getString("name")
+                    val newRepo = Repository(tmp.getString("name"))
+                    newRepo.save()
                 }
             }
-
     }
 
 }
