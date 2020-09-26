@@ -1,21 +1,26 @@
 package com.example.juicimo_github
 
 import android.os.Bundle
-import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.juicimo_github.adapters.OnRepositoryItemClickListener
 import com.example.juicimo_github.adapters.ReposRecyclerAdapter
 import com.example.juicimo_github.classes.Repository
+import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import com.koushikdutta.ion.Ion
 import kotlinx.android.synthetic.main.content_scrolling.*
+import org.json.JSONArray
+import org.json.JSONObject
+
 
 class ScrollingActivity : AppCompatActivity(), OnRepositoryItemClickListener {
 
     private lateinit var repository: ReposRecyclerAdapter
+    lateinit var strArray: Array<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -25,13 +30,16 @@ class ScrollingActivity : AppCompatActivity(), OnRepositoryItemClickListener {
         findViewById<CollapsingToolbarLayout>(R.id.toolbar_layout).title = title
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+                .setAction("Action", null).show()
         }
 
         initRecyclerView()
 
         val repositoriesList = createRepositoriesDataSet()
         repository.submitList(repositoriesList)
+
+        loadRepos()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -82,6 +90,21 @@ class ScrollingActivity : AppCompatActivity(), OnRepositoryItemClickListener {
             )
         }
         return repositories
+    }
+
+    private fun loadRepos(){
+        Ion.with(applicationContext)
+            .load("https://api.github.com/users/Inza/repos")
+            .asString()
+            .setCallback { e, result ->
+                val root: JSONArray = JSONArray(result)
+                strArray = Array<String>(root.length()) { "LOADING" }
+                for (i in 0 until root.length()) {
+                    val tmp = root.get(i) as JSONObject
+                    strArray[i] = tmp.getString("name")
+                }
+            }
+
     }
 
 }
