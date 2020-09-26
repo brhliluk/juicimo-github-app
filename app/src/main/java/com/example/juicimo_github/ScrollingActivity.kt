@@ -3,6 +3,7 @@ package com.example.juicimo_github
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.juicimo_github.adapters.OnRepositoryItemClickListener
@@ -13,7 +14,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.koushikdutta.ion.Ion
 import com.orm.SugarRecord
-import com.orm.SugarRecord.listAll
 import kotlinx.android.synthetic.main.content_scrolling.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -35,7 +35,7 @@ class ScrollingActivity : AppCompatActivity(), OnRepositoryItemClickListener {
                 .setAction("Action", null).show()
         }
 
-        loadRepos()
+        loadReposDatabaseOnline()
 
         initRecyclerView()
 
@@ -76,18 +76,32 @@ class ScrollingActivity : AppCompatActivity(), OnRepositoryItemClickListener {
         TODO("Not yet implemented")
     }
 
-    private fun loadRepos() {
+    private fun loadReposDatabaseOnline() {
         Ion.with(applicationContext)
             .load("https://api.github.com/users/Inza/repos")
             .asString()
             .setCallback { e, result ->
-                val root = JSONArray(result)
-                for (i in 0 until root.length()) {
-                    val tmp = root.get(i) as JSONObject
-                    val newRepo = Repository(tmp.getString("name"))
-                    newRepo.save()
+                if (e != null) {
+                    //error
+                    Toast.makeText(
+                        applicationContext,
+                        "Could not load data, using old records.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    // success retrieving repositories list, cleanup database
+                    SugarRecord.deleteAll(Repository::class.java)
+                    // parse retrieved data
+                    val root = JSONArray(result)
+                    // select name from every json record, save to db
+                    for (i in 0 until root.length()) {
+                        val tmp = root.get(i) as JSONObject
+                        val newRepo = Repository(tmp.getString("name"))
+                        newRepo.save()
+                    }
                 }
             }
     }
+
 
 }
