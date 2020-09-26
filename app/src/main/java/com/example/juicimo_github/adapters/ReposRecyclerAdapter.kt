@@ -13,7 +13,8 @@ import kotlinx.android.synthetic.main.repository_item.view.*
 /**
  * Class supporting list of repositories
  */
-class ReposRecyclerAdapter(private var clickListener: ScrollingActivity): RecyclerView.Adapter<ReposRecyclerAdapter.RepositoriesViewHolder>() {
+class ReposRecyclerAdapter(private var clickListener: ScrollingActivity) :
+    RecyclerView.Adapter<ReposRecyclerAdapter.RepositoriesViewHolder>() {
 
     // Stores all repositories
     private var items: List<Repository> = ArrayList()
@@ -34,7 +35,10 @@ class ReposRecyclerAdapter(private var clickListener: ScrollingActivity): Recycl
     /**
      * Replace the contents of a view (invoked by the layout manager)
      */
-    override fun onBindViewHolder(holder: RepositoriesViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: ReposRecyclerAdapter.RepositoriesViewHolder,
+        position: Int
+    ) {
         holder.initialize(items[position], clickListener)
     }
 
@@ -45,11 +49,11 @@ class ReposRecyclerAdapter(private var clickListener: ScrollingActivity): Recycl
         return items.size
     }
 
-    fun submitList(repositoriesList: List<Repository>){
+    fun submitList(repositoriesList: List<Repository>) {
         items = repositoriesList
     }
 
-    fun addItem(newRepository: Repository){
+    fun addItem(newRepository: Repository) {
         items = items + newRepository
     }
 
@@ -58,20 +62,20 @@ class ReposRecyclerAdapter(private var clickListener: ScrollingActivity): Recycl
      */
     class RepositoriesViewHolder constructor(
         itemView: View
-    ): RecyclerView.ViewHolder(itemView){
+    ) : RecyclerView.ViewHolder(itemView) {
         private val repositoryName: TextView = itemView.repo_name
 
-        fun bind(repository: Repository){
+        fun bind(repository: Repository) {
             repositoryName.text = repository.name
         }
 
         /**
          * Init all fields, add onClickListener to items
          */
-        fun initialize(item: Repository, action: OnRepositoryItemClickListener){
+        fun initialize(item: Repository, action: OnRepositoryItemClickListener) {
             repositoryName.text = item.name
 
-            itemView.setOnClickListener{
+            itemView.setOnClickListener {
                 action.onItemClick(item, adapterPosition)
             }
         }
@@ -82,6 +86,6 @@ class ReposRecyclerAdapter(private var clickListener: ScrollingActivity): Recycl
 /**
  * Ensures clicking on item in list feedback
  */
-interface OnRepositoryItemClickListener{
+interface OnRepositoryItemClickListener {
     fun onItemClick(item: Repository, position: Int)
 }

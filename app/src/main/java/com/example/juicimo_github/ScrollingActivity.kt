@@ -1,17 +1,19 @@
 package com.example.juicimo_github
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.juicimo_github.adapters.OnCommitItemClickListener
 import com.example.juicimo_github.adapters.OnRepositoryItemClickListener
 import com.example.juicimo_github.adapters.ReposRecyclerAdapter
 import com.example.juicimo_github.models.Repository
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.koushikdutta.ion.Ion
 import com.orm.SugarRecord
 import kotlinx.android.synthetic.main.content_scrolling.*
@@ -21,25 +23,29 @@ import org.json.JSONObject
 
 class ScrollingActivity : AppCompatActivity(), OnRepositoryItemClickListener {
 
-    private lateinit var repository: ReposRecyclerAdapter
-    //private val repositoriesDataSet: MutableList<Repository> = ArrayList()
+    private lateinit var repositoryAdapter: ReposRecyclerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scrolling)
         setSupportActionBar(findViewById(R.id.toolbar))
-        findViewById<CollapsingToolbarLayout>(R.id.toolbar_layout).title = title
+        findViewById<CollapsingToolbarLayout>(R.id.toolbar_layout).title = "GitHub/Inza"
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            val intent = Intent(
+                Intent.ACTION_SENDTO, Uri.fromParts(
+                    "mailto", "tomas.jukin@juicymo.cz", null
+                )
+            )
+            startActivity(intent)
         }
 
-        loadReposDatabaseOnline()
+        loadReposDatabase()
 
         initRecyclerView()
 
-        repository.submitList(SugarRecord.listAll(Repository::class.java))
+        // Fill recyclerview with data
+        repositoryAdapter.submitList(SugarRecord.listAll(Repository::class.java))
 
     }
 
@@ -66,17 +72,24 @@ class ScrollingActivity : AppCompatActivity(), OnRepositoryItemClickListener {
     private fun initRecyclerView() {
         recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
-            repository =
+            repositoryAdapter =
                 ReposRecyclerAdapter(this@ScrollingActivity)
-            recycler_view.adapter = repository
+            recycler_view.adapter = repositoryAdapter
         }
     }
 
     override fun onItemClick(item: Repository, position: Int) {
-        TODO("Not yet implemented")
+        val intent = Intent(applicationContext, DetailActivity::class.java)
+        startActivity(intent)
     }
 
-    private fun loadReposDatabaseOnline() {
+
+    /**
+     * Fills database of repositories with records
+     * Online results if internet connection is available
+     * Offline results - loading from database if no internet
+     */
+    private fun loadReposDatabase() {
         Ion.with(applicationContext)
             .load("https://api.github.com/users/Inza/repos")
             .asString()
