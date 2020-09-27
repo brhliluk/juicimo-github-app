@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.juicimo_github.adapters.OnCommitItemClickListener
 import com.example.juicimo_github.adapters.OnRepositoryItemClickListener
 import com.example.juicimo_github.adapters.ReposRecyclerAdapter
 import com.example.juicimo_github.models.Repository
@@ -24,6 +23,7 @@ import org.json.JSONObject
 class ScrollingActivity : AppCompatActivity(), OnRepositoryItemClickListener {
 
     private lateinit var repositoryAdapter: ReposRecyclerAdapter
+    val url = "https://api.github.com/users/Inza/repos"
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -79,7 +79,8 @@ class ScrollingActivity : AppCompatActivity(), OnRepositoryItemClickListener {
     }
 
     override fun onItemClick(item: Repository, position: Int) {
-        val intent = Intent(applicationContext, DetailActivity::class.java)
+        val intent = Intent(this@ScrollingActivity, DetailActivity::class.java)
+        intent.putExtra("title", item.name)
         startActivity(intent)
     }
 
@@ -91,7 +92,7 @@ class ScrollingActivity : AppCompatActivity(), OnRepositoryItemClickListener {
      */
     private fun loadReposDatabase() {
         Ion.with(applicationContext)
-            .load("https://api.github.com/users/Inza/repos")
+            .load(url)
             .asString()
             .setCallback { e, result ->
                 if (e != null) {

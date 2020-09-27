@@ -20,14 +20,19 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".DetailActivity"
+            android:label="GitHub/Inza"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".ScrollingActivity"/>
+
         <meta-data android:name="DATABASE" android:value="repositories.db" />
         <meta-data android:name="VERSION" android:value="2" />
         <meta-data android:name="QUERY_LOG" android:value="true" />
         <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.example.juicimo_github.models" />
+
     </application>
 
 </manifest>

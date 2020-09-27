@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.juicimo_github.DetailActivity
 import com.example.juicimo_github.R
-import com.example.juicimo_github.models.Commit
+import com.example.juicimo_github.models.CommitGH
 import kotlinx.android.synthetic.main.commit_item.view.*
 
 /**
@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.commit_item.view.*
 class CommitsRecyclerAdapter(private var clickListener: DetailActivity): RecyclerView.Adapter<CommitsRecyclerAdapter.CommitsViewHolder>() {
 
     // Stores all repositories
-    private var items: List<Commit> = ArrayList()
+    private var items: List<CommitGH> = ArrayList()
 
     /**
      * Create new views (invoked by the layout manager)
@@ -35,7 +35,7 @@ class CommitsRecyclerAdapter(private var clickListener: DetailActivity): Recycle
      * Replace the contents of a view (invoked by the layout manager)
      */
     override fun onBindViewHolder(holder: CommitsRecyclerAdapter.CommitsViewHolder, position: Int) {
-        holder.initialize(items[position], clickListener)
+        holder.initialize(items[position])
     }
 
     /**
@@ -45,12 +45,8 @@ class CommitsRecyclerAdapter(private var clickListener: DetailActivity): Recycle
         return items.size
     }
 
-    fun submitList(commitsList: List<Commit>){
+    fun submitList(commitsList: List<CommitGH>){
         items = commitsList
-    }
-
-    fun addItem(newCommit: Commit){
-        items = items + newCommit
     }
 
     /**
@@ -60,28 +56,22 @@ class CommitsRecyclerAdapter(private var clickListener: DetailActivity): Recycle
         itemView: View
     ): RecyclerView.ViewHolder(itemView){
         private val commitName: TextView = itemView.commit_name
+        private val commitDetails: TextView = itemView.commit_details
 
-        fun bind(commit: Commit){
-            commitName.text = commit.name
+        fun bind(commitGH: CommitGH){
+            commitName.text = commitGH.name
+            val commitDetailsText = commitGH.author + " commited on " + commitGH.date
+            commitDetails.text = commitDetailsText
         }
 
         /**
          * Init all fields, add onClickListener to items
          */
-        fun initialize(item: Commit, action: OnCommitItemClickListener){
+        fun initialize(item: CommitGH){
             commitName.text = item.name
-
-            itemView.setOnClickListener{
-                action.onItemClick(item, adapterPosition)
-            }
+            val commitDetailsText = item.author + " commited on " + item.date
+            commitDetails.text = commitDetailsText
         }
 
     }
-}
-
-/**
- * Ensures clicking on item in list feedback
- */
-interface OnCommitItemClickListener{
-    fun onItemClick(item: Commit, position: Int)
 }

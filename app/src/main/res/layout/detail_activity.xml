@@ -7,14 +7,13 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/detail_repo_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="160dp"
         android:layout_marginTop="36dp"
-        android:layout_marginEnd="160dp"
         android:text="@string/repo"
         android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,10 +23,10 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
+
         android:layout_marginTop="36dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/detail_repo_name"
         tools:layout_editor_absoluteX="16dp"
         tools:listitem="@layout/commit_item"/>
 

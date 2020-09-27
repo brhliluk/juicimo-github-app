@@ -53,10 +53,6 @@ class ReposRecyclerAdapter(private var clickListener: ScrollingActivity) :
         items = repositoriesList
     }
 
-    fun addItem(newRepository: Repository) {
-        items = items + newRepository
-    }
-
     /**
      * Provide a reference to the views for each data item
      */
