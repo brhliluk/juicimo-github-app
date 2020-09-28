@@ -25,6 +25,8 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.detail_activity)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         detail_repo_name.text = intent.getStringExtra("title")
         reponame = detail_repo_name.text as String
 
