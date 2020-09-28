@@ -27,11 +27,8 @@ class DetailActivity : AppCompatActivity() {
 
         setupActionBar()
 
-        initRecyclerView()
-
         loadCommitsDatabase()
 
-        commitAdapter.submitList(SugarRecord.find(CommitGH::class.java, "parent = ?", reponame))
     }
 
     /**
@@ -64,6 +61,8 @@ class DetailActivity : AppCompatActivity() {
                         "Could not load data, using old records.",
                         Toast.LENGTH_LONG
                     ).show()
+                    initRecyclerView()
+                    commitAdapter.submitList(SugarRecord.find(CommitGH::class.java, "parent = ?", reponame))
                 } else {
                     // success retrieving repositories list, cleanup database
                     SugarRecord.deleteAll(CommitGH::class.java, "parent = ?", reponame)
@@ -75,6 +74,8 @@ class DetailActivity : AppCompatActivity() {
                         val commit = parseJSONCommit(tmp)
                         commit.save()
                     }
+                    initRecyclerView()
+                    commitAdapter.submitList(SugarRecord.find(CommitGH::class.java, "parent = ?", reponame))
                 }
             }
     }

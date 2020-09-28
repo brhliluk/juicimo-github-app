@@ -43,10 +43,10 @@ class MainActivity : AppCompatActivity(), OnRepositoryItemClickListener {
 
         loadReposDatabase()
 
-        initRecyclerView()
+        //initRecyclerView()
 
         // Fill recyclerview with data
-        repositoryAdapter.submitList(SugarRecord.listAll(Repository::class.java))
+        //repositoryAdapter.submitList(SugarRecord.listAll(Repository::class.java))
 
     }
 
@@ -103,6 +103,8 @@ class MainActivity : AppCompatActivity(), OnRepositoryItemClickListener {
                         "Could not load data, using old records.",
                         Toast.LENGTH_LONG
                     ).show()
+                    initRecyclerView()
+                    repositoryAdapter.submitList(SugarRecord.listAll(Repository::class.java))
                 } else {
                     // success retrieving repositories list, cleanup database
                     SugarRecord.deleteAll(Repository::class.java)
@@ -114,6 +116,8 @@ class MainActivity : AppCompatActivity(), OnRepositoryItemClickListener {
                         val newRepo = Repository(tmp.getString("name"))
                         newRepo.save()
                     }
+                    initRecyclerView()
+                    repositoryAdapter.submitList(SugarRecord.listAll(Repository::class.java))
                 }
             }
     }
