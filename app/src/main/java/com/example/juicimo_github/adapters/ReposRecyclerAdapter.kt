@@ -6,14 +6,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.juicimo_github.R
-import com.example.juicimo_github.ScrollingActivity
+import com.example.juicimo_github.MainActivity
 import com.example.juicimo_github.models.Repository
 import kotlinx.android.synthetic.main.repository_item.view.*
 
 /**
  * Class supporting list of repositories
  */
-class ReposRecyclerAdapter(private var clickListener: ScrollingActivity) :
+class ReposRecyclerAdapter(private var clickListener: MainActivity) :
     RecyclerView.Adapter<ReposRecyclerAdapter.RepositoriesViewHolder>() {
 
     // Stores all repositories

@@ -9,11 +9,14 @@ import com.example.juicimo_github.DetailActivity
 import com.example.juicimo_github.R
 import com.example.juicimo_github.models.CommitGH
 import kotlinx.android.synthetic.main.commit_item.view.*
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 /**
  * Class supporting list of repositories
  */
-class CommitsRecyclerAdapter(private var clickListener: DetailActivity): RecyclerView.Adapter<CommitsRecyclerAdapter.CommitsViewHolder>() {
+class CommitsRecyclerAdapter(private var clickListener: DetailActivity) :
+    RecyclerView.Adapter<CommitsRecyclerAdapter.CommitsViewHolder>() {
 
     // Stores all repositories
     private var items: List<CommitGH> = ArrayList()
@@ -45,7 +48,7 @@ class CommitsRecyclerAdapter(private var clickListener: DetailActivity): Recycle
         return items.size
     }
 
-    fun submitList(commitsList: List<CommitGH>){
+    fun submitList(commitsList: List<CommitGH>) {
         items = commitsList
     }
 
@@ -54,20 +57,20 @@ class CommitsRecyclerAdapter(private var clickListener: DetailActivity): Recycle
      */
     class CommitsViewHolder constructor(
         itemView: View
-    ): RecyclerView.ViewHolder(itemView){
+    ) : RecyclerView.ViewHolder(itemView) {
         private val commitName: TextView = itemView.commit_name
         private val commitDetails: TextView = itemView.commit_details
 
-        fun bind(commitGH: CommitGH){
-            commitName.text = commitGH.name
-            val commitDetailsText = commitGH.author + " commited on " + commitGH.date
+        fun bind(item: CommitGH) {
+            commitName.text = item.name
+            val commitDetailsText = item.author + " commited on " + item.date
             commitDetails.text = commitDetailsText
         }
 
         /**
          * Init all fields, add onClickListener to items
          */
-        fun initialize(item: CommitGH){
+        fun initialize(item: CommitGH) {
             commitName.text = item.name
             val commitDetailsText = item.author + " commited on " + item.date
             commitDetails.text = commitDetailsText

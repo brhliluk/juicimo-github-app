@@ -12,8 +12,11 @@ import kotlinx.android.synthetic.main.detail_activity.*
 import kotlinx.android.synthetic.main.detail_activity.recycler_view
 import org.json.JSONArray
 import org.json.JSONObject
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
-class DetailActivity : AppCompatActivity(){
+class DetailActivity : AppCompatActivity() {
 
     private lateinit var commitAdapter: CommitsRecyclerAdapter
     val url = "https://api.github.com/repos/Inza/"
@@ -78,15 +81,24 @@ class DetailActivity : AppCompatActivity(){
     }
 
     /**
-     * Parse recieved commit in json format
+     * Parse received commit in json format
      * into local Commit model
      */
-    private fun parseJSONCommit(jsonCom: JSONObject): CommitGH{
+    private fun parseJSONCommit(jsonCom: JSONObject): CommitGH {
+        //get commit message
         val commitMessage = jsonCom.getJSONObject("commit").getString("message")
+        //get commit author
         val commitAuthor =
             jsonCom.getJSONObject("commit").getJSONObject("author").getString("name")
+        //get commit date, parse and format as LocalDateTime, convert to string
         val commitDate = jsonCom.getJSONObject("commit").getJSONObject("author").getString("date")
-        return CommitGH(reponame, commitMessage, commitAuthor, commitDate)
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        val date = LocalDateTime.parse(commitDate, formatter).format(
+            DateTimeFormatter.ofLocalizedDateTime(
+                FormatStyle.MEDIUM
+            )
+        )
+        return CommitGH(reponame, commitMessage, commitAuthor, date.toString())
     }
 
 }

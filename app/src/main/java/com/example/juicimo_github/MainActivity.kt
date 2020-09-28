@@ -20,10 +20,11 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 
-class ScrollingActivity : AppCompatActivity(), OnRepositoryItemClickListener {
+class MainActivity : AppCompatActivity(), OnRepositoryItemClickListener {
 
     private lateinit var repositoryAdapter: ReposRecyclerAdapter
     val url = "https://api.github.com/users/Inza/repos"
+    var firstRun: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -73,13 +74,13 @@ class ScrollingActivity : AppCompatActivity(), OnRepositoryItemClickListener {
         recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
             repositoryAdapter =
-                ReposRecyclerAdapter(this@ScrollingActivity)
+                ReposRecyclerAdapter(this@MainActivity)
             recycler_view.adapter = repositoryAdapter
         }
     }
 
     override fun onItemClick(item: Repository, position: Int) {
-        val intent = Intent(this@ScrollingActivity, DetailActivity::class.java)
+        val intent = Intent(this@MainActivity, DetailActivity::class.java)
         intent.putExtra("title", item.name)
         startActivity(intent)
     }
