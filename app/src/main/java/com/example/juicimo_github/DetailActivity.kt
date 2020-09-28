@@ -8,7 +8,6 @@ import com.example.juicimo_github.adapters.CommitsRecyclerAdapter
 import com.example.juicimo_github.models.CommitGH
 import com.koushikdutta.ion.Ion
 import com.orm.SugarRecord
-import kotlinx.android.synthetic.main.detail_activity.*
 import kotlinx.android.synthetic.main.detail_activity.recycler_view
 import org.json.JSONArray
 import org.json.JSONObject
@@ -19,16 +18,14 @@ import java.time.format.FormatStyle
 class DetailActivity : AppCompatActivity() {
 
     private lateinit var commitAdapter: CommitsRecyclerAdapter
-    val url = "https://api.github.com/repos/Inza/"
+    private val url = "https://api.github.com/repos/Inza/"
     private lateinit var reponame: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.detail_activity)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        detail_repo_name.text = intent.getStringExtra("title")
-        reponame = detail_repo_name.text as String
+        setupActionBar()
 
         initRecyclerView()
 
@@ -101,6 +98,20 @@ class DetailActivity : AppCompatActivity() {
             )
         )
         return CommitGH(reponame, commitMessage, commitAuthor, date.toString())
+    }
+
+    /**
+     * Set name to repository name
+     * Add back button
+     */
+    private fun setupActionBar(){
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = intent.getStringExtra("title")
+        // allow reponame to be set with String?
+        if (supportActionBar?.title == null) {
+            println("error")
+        } else
+            reponame = supportActionBar?.title as String
     }
 
 }
