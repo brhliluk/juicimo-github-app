@@ -20,6 +20,7 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var commitAdapter: CommitsRecyclerAdapter
     private val url = "https://api.github.com/repos/Inza/"
     private lateinit var reponame: String
+    private val commit: CommitGH = CommitGH()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +28,9 @@ class DetailActivity : AppCompatActivity() {
 
         setupActionBar()
 
-        loadCommitsDatabase()
+        initRecyclerView()
+
+        commit.loadIntoDatabase(applicationContext, commitAdapter, "$url$reponame/commits", reponame)
 
     }
 
@@ -42,65 +45,7 @@ class DetailActivity : AppCompatActivity() {
             recycler_view.adapter = commitAdapter
         }
     }
-
-
-    /**
-     * Fills database of repositories with records
-     * Online results if internet connection is available
-     * Offline results - loading from database if no internet
-     */
-    private fun loadCommitsDatabase() {
-        Ion.with(applicationContext)
-            .load("$url$reponame/commits")
-            .asString()
-            .setCallback { e, result ->
-                if (e != null) {
-                    //error
-                    Toast.makeText(
-                        applicationContext,
-                        "Could not load data, using old records.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    initRecyclerView()
-                    commitAdapter.submitList(SugarRecord.find(CommitGH::class.java, "parent = ?", reponame))
-                } else {
-                    // success retrieving repositories list, cleanup database
-                    SugarRecord.deleteAll(CommitGH::class.java, "parent = ?", reponame)
-                    // parse retrieved data
-                    val root = JSONArray(result)
-                    // select name from last max 10 json records, save to db
-                    for (i in 0 until minOf(root.length(), 10)) {
-                        val tmp = root.get(i) as JSONObject
-                        val commit = parseJSONCommit(tmp)
-                        commit.save()
-                    }
-                    initRecyclerView()
-                    commitAdapter.submitList(SugarRecord.find(CommitGH::class.java, "parent = ?", reponame))
-                }
-            }
-    }
-
-    /**
-     * Parse received commit in json format
-     * into local Commit model
-     */
-    private fun parseJSONCommit(jsonCom: JSONObject): CommitGH {
-        //get commit message
-        val commitMessage = jsonCom.getJSONObject("commit").getString("message")
-        //get commit author
-        val commitAuthor =
-            jsonCom.getJSONObject("commit").getJSONObject("author").getString("name")
-        //get commit date, parse and format as LocalDateTime, convert to string
-        val commitDate = jsonCom.getJSONObject("commit").getJSONObject("author").getString("date")
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-        val date = LocalDateTime.parse(commitDate, formatter).format(
-            DateTimeFormatter.ofLocalizedDateTime(
-                FormatStyle.MEDIUM
-            )
-        )
-        return CommitGH(reponame, commitMessage, commitAuthor, date.toString())
-    }
-
+    
     /**
      * Set name to repository name
      * Add back button

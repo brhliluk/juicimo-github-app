@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.juicimo_github.adapters.OnRepositoryItemClickListener
@@ -13,16 +12,13 @@ import com.example.juicimo_github.adapters.ReposRecyclerAdapter
 import com.example.juicimo_github.models.Repository
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.koushikdutta.ion.Ion
-import com.orm.SugarRecord
 import kotlinx.android.synthetic.main.content_scrolling.*
-import org.json.JSONArray
-import org.json.JSONObject
 
 
 class MainActivity : AppCompatActivity(), OnRepositoryItemClickListener {
 
     private lateinit var repositoryAdapter: ReposRecyclerAdapter
+    private val repository: Repository = Repository()
     val url = "https://api.github.com/users/Inza/repos"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,12 +37,10 @@ class MainActivity : AppCompatActivity(), OnRepositoryItemClickListener {
             startActivity(intent)
         }
 
-        loadReposDatabase()
+        initRecyclerView()
 
-        //initRecyclerView()
-
-        // Fill recyclerview with data
-        //repositoryAdapter.submitList(SugarRecord.listAll(Repository::class.java))
+        // Load repositories into database and recyclerView
+        repository.loadIntoDatabase(applicationContext, repositoryAdapter, url)
 
     }
 
@@ -79,47 +73,15 @@ class MainActivity : AppCompatActivity(), OnRepositoryItemClickListener {
         }
     }
 
+
+    /**
+     * Catches clicks on recyclerview
+     * Starts new DetailActivity intent
+     */
     override fun onItemClick(item: Repository, position: Int) {
         val intent = Intent(this@MainActivity, DetailActivity::class.java)
         intent.putExtra("title", item.name)
         startActivity(intent)
-    }
-
-
-    /**
-     * Fills database of repositories with records
-     * Online results if internet connection is available
-     * Offline results - loading from database if no internet
-     */
-    private fun loadReposDatabase() {
-        Ion.with(applicationContext)
-            .load(url)
-            .asString()
-            .setCallback { e, result ->
-                if (e != null) {
-                    //error
-                    Toast.makeText(
-                        applicationContext,
-                        "Could not load data, using old records.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    initRecyclerView()
-                    repositoryAdapter.submitList(SugarRecord.listAll(Repository::class.java))
-                } else {
-                    // success retrieving repositories list, cleanup database
-                    SugarRecord.deleteAll(Repository::class.java)
-                    // parse retrieved data
-                    val root = JSONArray(result)
-                    // select name from every json record, save to db
-                    for (i in 0 until root.length()) {
-                        val tmp = root.get(i) as JSONObject
-                        val newRepo = Repository(tmp.getString("name"))
-                        newRepo.save()
-                    }
-                    initRecyclerView()
-                    repositoryAdapter.submitList(SugarRecord.listAll(Repository::class.java))
-                }
-            }
     }
 
 
