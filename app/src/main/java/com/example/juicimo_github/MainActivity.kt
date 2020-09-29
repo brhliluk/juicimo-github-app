@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity(), OnRepositoryItemClickListener {
 
         setSupportActionBar(findViewById(R.id.toolbar))
         findViewById<CollapsingToolbarLayout>(R.id.toolbar_layout).title = "GitHub/Inza"
-        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
+        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { _ ->
             val intent = Intent(
                 Intent.ACTION_SENDTO, Uri.fromParts(
                     "mailto", "tomas.jukin@juicymo.cz", null
@@ -56,7 +56,11 @@ class MainActivity : AppCompatActivity(), OnRepositoryItemClickListener {
         // as you specify a parent activity in AndroidManifest.xml.
 
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_settings -> {
+                val intent = Intent(this@MainActivity, AboutActivity::class.java)
+                startActivity(intent)
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

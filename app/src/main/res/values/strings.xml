@@ -94,4 +94,12 @@
     <string name="commit">commit</string>
     <string name="description">description</string>
     <string name="committer">committer</string>
+    <string name="credits">
+        "App that displays all repositories from Tomas Jirutka's GitHub."
+        "Tap on each repository reveals last 10 commits in there."
+        "It displays data from last app launch when there is no available internet connection."
+        "App stores data in Sugar database and uses Ion for networking.\n\n"
+        by Lukáš Brhlík
+    </string>
+    <string name="about">About App</string>
 </resources>

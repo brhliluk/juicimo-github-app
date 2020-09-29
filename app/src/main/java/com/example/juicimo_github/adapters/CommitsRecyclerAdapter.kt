@@ -9,8 +9,6 @@ import com.example.juicimo_github.DetailActivity
 import com.example.juicimo_github.R
 import com.example.juicimo_github.models.CommitGH
 import kotlinx.android.synthetic.main.commit_item.view.*
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 /**
  * Class supporting list of repositories
@@ -25,7 +23,7 @@ class CommitsRecyclerAdapter(private var clickListener: DetailActivity) :
      * Create new views (invoked by the layout manager)
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommitsViewHolder {
-        return CommitsRecyclerAdapter.CommitsViewHolder(
+        return CommitsViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.commit_item,
                 parent,
@@ -60,12 +58,6 @@ class CommitsRecyclerAdapter(private var clickListener: DetailActivity) :
     ) : RecyclerView.ViewHolder(itemView) {
         private val commitName: TextView = itemView.commit_name
         private val commitDetails: TextView = itemView.commit_details
-
-        fun bind(item: CommitGH) {
-            commitName.text = item.name
-            val commitDetailsText = item.author + " commited on " + item.date
-            commitDetails.text = commitDetailsText
-        }
 
         /**
          * Init all fields, add onClickListener to items

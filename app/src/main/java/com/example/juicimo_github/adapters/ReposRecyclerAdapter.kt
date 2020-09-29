@@ -36,7 +36,7 @@ class ReposRecyclerAdapter(private var clickListener: MainActivity) :
      * Replace the contents of a view (invoked by the layout manager)
      */
     override fun onBindViewHolder(
-        holder: ReposRecyclerAdapter.RepositoriesViewHolder,
+        holder: RepositoriesViewHolder,
         position: Int
     ) {
         holder.initialize(items[position], clickListener)
@@ -60,10 +60,6 @@ class ReposRecyclerAdapter(private var clickListener: MainActivity) :
         itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
         private val repositoryName: TextView = itemView.repo_name
-
-        fun bind(repository: Repository) {
-            repositoryName.text = repository.name
-        }
 
         /**
          * Init all fields, add onClickListener to items

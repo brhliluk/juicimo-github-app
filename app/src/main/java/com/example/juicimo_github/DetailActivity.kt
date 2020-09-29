@@ -1,19 +1,11 @@
 package com.example.juicimo_github
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.juicimo_github.adapters.CommitsRecyclerAdapter
 import com.example.juicimo_github.models.CommitGH
-import com.koushikdutta.ion.Ion
-import com.orm.SugarRecord
 import kotlinx.android.synthetic.main.detail_activity.recycler_view
-import org.json.JSONArray
-import org.json.JSONObject
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 class DetailActivity : AppCompatActivity() {
 
@@ -45,7 +37,7 @@ class DetailActivity : AppCompatActivity() {
             recycler_view.adapter = commitAdapter
         }
     }
-    
+
     /**
      * Set name to repository name
      * Add back button

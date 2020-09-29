@@ -3,7 +3,6 @@ package com.example.juicimo_github.models
 import android.content.Context
 import android.widget.Toast
 import com.example.juicimo_github.adapters.CommitsRecyclerAdapter
-import com.example.juicimo_github.adapters.ReposRecyclerAdapter
 import com.koushikdutta.ion.Ion
 import com.orm.SugarRecord
 import org.json.JSONArray
